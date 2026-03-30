@@ -1,0 +1,21 @@
+<header class="site-header">
+  <div class="container">
+    <a href="{{ '/' | relative_url }}" class="site-logo">
+      {% if site.data.settings.logo and site.data.settings.logo != "" %}
+        <img src="{{ site.data.settings.logo }}" alt="{{ site.data.settings.title }}">
+      {% else %}
+        <span>{{ site.data.settings.title | default: site.title }}</span>
+      {% endif %}
+    </a>
+    <nav class="site-nav">
+      <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a href="{{ '/' | relative_url }}" {% if page.url == '/' %}class="active"{% endif %}>Home</a></li>
+        <li><a href="{{ '/about' | relative_url }}" {% if page.url == '/about' or page.url == '/about.html' %}class="active"{% endif %}>About Us</a></li>
+        <li><a href="{{ '/contact' | relative_url }}" {% if page.url == '/contact' or page.url == '/contact.html' %}class="active"{% endif %}>Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>

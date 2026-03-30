@@ -1,0 +1,188 @@
+media:
+  input: media
+  output: /media
+  categories: [image, document]
+
+components:
+  seo:
+    type: object
+    label: SEO
+    fields:
+      - name: meta_title
+        label: Meta title
+        type: string
+        description: Override the page title in search results.
+      - name: meta_description
+        label: Meta description
+        type: text
+        description: Short summary shown in search results.
+      - name: og_image
+        label: Social share image
+        type: image
+
+content:
+  - name: settings
+    label: Site Settings
+    type: file
+    path: _data/settings.json
+    format: json
+    fields:
+      - name: title
+        label: Site title
+        type: string
+        required: true
+      - name: description
+        label: Site description
+        type: text
+      - name: logo
+        label: Logo
+        type: image
+      - name: footer_text
+        label: Footer text
+        type: string
+        description: Shown at the bottom of every page.
+
+  - name: pages
+    label: Pages
+    type: group
+    items:
+      - name: index
+        label: Home
+        type: file
+        path: _data/index.json
+        format: json
+        fields:
+          - name: hero_headline
+            label: Headline
+            type: string
+            required: true
+          - name: hero_subtitle
+            label: Subtitle
+            type: text
+          - name: hero_image
+            label: Hero image
+            type: image
+          - name: hero_cta_label
+            label: Button text
+            type: string
+          - name: hero_cta_url
+            label: Button link
+            type: string
+          - name: services
+            label: Services
+            type: object
+            list:
+              min: 1
+              max: 6
+              collapsible:
+                collapsed: false
+                summary: "{title}"
+            fields:
+              - name: title
+                type: string
+                required: true
+              - name: description
+                type: text
+              - name: icon
+                label: Icon or image
+                type: image
+          - name: seo
+            component: seo
+
+      - name: about
+        label: About Us
+        type: file
+        path: _data/about.json
+        format: json
+        fields:
+          - name: heading
+            label: Page heading
+            type: string
+            required: true
+          - name: intro
+            label: Introduction
+            type: rich-text
+          - name: mission
+            label: Mission statement
+            type: text
+          - name: team
+            label: Team members
+            type: object
+            list:
+              collapsible:
+                collapsed: true
+                summary: "{name} — {role}"
+            fields:
+              - name: name
+                type: string
+                required: true
+              - name: role
+                label: Role / Title
+                type: string
+              - name: photo
+                type: image
+              - name: bio
+                type: text
+          - name: seo
+            component: seo
+
+      - name: contact
+        label: Contact
+        type: file
+        path: _data/contact.json
+        format: json
+        fields:
+          - name: heading
+            label: Page heading
+            type: string
+            required: true
+          - name: description
+            label: Page description
+            type: text
+          - name: email
+            type: string
+          - name: phone
+            type: string
+          - name: address
+            type: text
+          - name: map_embed_url
+            label: Map embed URL
+            type: string
+            description: Google Maps or similar embed link.
+          - name: social
+            label: Social links
+            type: object
+            list:
+              max: 8
+              collapsible:
+                collapsed: true
+                summary: "{platform}"
+            fields:
+              - name: platform
+                label: Platform name
+                type: string
+                required: true
+              - name: url
+                label: Profile URL
+                type: string
+                required: true
+          - name: seo
+            component: seo
+
+settings:
+  content:
+    merge: true
+  commit:
+    templates:
+      create: "content: add {filename}"
+      update: "content: update {filename}"
+      delete: "content: remove {filename}"
+
+actions:
+  - name: deploy-site
+    label: Deploy site
+    workflow: deploy.yml
+    confirm:
+      title: Deploy site?
+      message: This will rebuild and publish the site to GitHub Pages.
+      button: Deploy

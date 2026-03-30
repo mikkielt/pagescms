@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }} | {{ site.data.settings.title | default: site.title }}{% endif %}</title>
+  <meta name="description" content="{{ page.seo_description | default: site.data.settings.description | default: '' }}">
+  {% if page.og_image %}<meta property="og:image" content="{{ page.og_image }}">{% endif %}
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+</head>
+<body>
+  {% include header.html %}
+  <main>
+    {{ content }}
+  </main>
+  {% include footer.html %}
+  <script>
+    document.querySelector('.nav-toggle').addEventListener('click', function() {
+      const expanded = this.getAttribute('aria-expanded') === 'true';
+      this.setAttribute('aria-expanded', !expanded);
+      document.querySelector('.nav-links').classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

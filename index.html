@@ -1,0 +1,47 @@
+---
+layout: default
+title: Home
+seo_title: "{{ site.data.index.seo.meta_title }}"
+seo_description: "{{ site.data.index.seo.meta_description }}"
+og_image: "{{ site.data.index.seo.og_image }}"
+---
+
+{% assign d = site.data.index %}
+
+<section class="hero">
+  <div class="container">
+    {% if d.hero_image and d.hero_image != "" %}
+      <img src="{{ d.hero_image }}" alt="" class="hero-image">
+    {% endif %}
+    <div class="hero-content">
+      <h1>{{ d.hero_headline | default: "Welcome" }}</h1>
+      {% if d.hero_subtitle and d.hero_subtitle != "" %}
+        <p class="hero-subtitle">{{ d.hero_subtitle }}</p>
+      {% endif %}
+      {% if d.hero_cta_label and d.hero_cta_label != "" %}
+        <a href="{{ d.hero_cta_url | default: '/contact' | relative_url }}" class="btn">{{ d.hero_cta_label }}</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% if d.services and d.services.size > 0 %}
+<section class="services">
+  <div class="container">
+    <h2>Our Services</h2>
+    <div class="services-grid">
+      {% for service in d.services %}
+        <div class="service-card">
+          {% if service.icon and service.icon != "" %}
+            <img src="{{ service.icon }}" alt="" class="service-icon">
+          {% endif %}
+          <h3>{{ service.title }}</h3>
+          {% if service.description and service.description != "" %}
+            <p>{{ service.description }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
