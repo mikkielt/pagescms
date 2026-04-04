@@ -1,6 +1,6 @@
 title: Domy z Bala
 url: ""
-baseurl: ""
+baseurl: "/pagescms"
 markdown: kramdown
 
 exclude:

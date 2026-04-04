@@ -17,7 +17,7 @@ seo_description: "Naturalne, drewniane budownictwo. Zobacz nasze realizacje dom√
         <article class="portfolio-slide" data-index="{{ forloop.index0 }}">
           {% if project.featured_image and project.featured_image != "" %}
             <img
-              src="{{ project.featured_image }}"
+              src="{{ project.featured_image | relative_url }}"
               alt="{{ project.title }}"
               class="portfolio-slide__bg"
               loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
@@ -59,10 +59,10 @@ seo_description: "Naturalne, drewniane budownictwo. Zobacz nasze realizacje dom√
               {% for img in all_images %}
                 <button
                   class="portfolio-thumb{% if forloop.first %} active{% endif %}"
-                  onclick="openLightbox('{{ img }}', this)"
+                  onclick="openLightbox('{{ img | relative_url }}', this)"
                   aria-label="Powiƒôksz zdjƒôcie {{ forloop.index }}"
                 >
-                  <img src="{{ img }}" alt="Miniatura {{ forloop.index }}" loading="lazy">
+                  <img src="{{ img | relative_url }}" alt="Miniatura {{ forloop.index }}" loading="lazy">
                 </button>
               {% endfor %}
             </div>
@@ -70,10 +70,10 @@ seo_description: "Naturalne, drewniane budownictwo. Zobacz nasze realizacje dom√
             <div class="portfolio-thumbs">
               <button
                 class="portfolio-thumb active"
-                onclick="openLightbox('{{ all_images[0] }}', this)"
+                onclick="openLightbox('{{ all_images[0] | relative_url }}', this)"
                 aria-label="Powiƒôksz zdjƒôcie"
               >
-                <img src="{{ all_images[0] }}" alt="Miniatura" loading="lazy">
+                <img src="{{ all_images[0] | relative_url }}" alt="Miniatura" loading="lazy">
               </button>
             </div>
           {% endif %}
@@ -117,7 +117,7 @@ seo_description: "Naturalne, drewniane budownictwo. Zobacz nasze realizacje dom√
 
     {% if about.background_image and about.background_image != "" %}
       <div class="about__bg-image">
-        <img src="{{ about.background_image }}" alt="O nas" loading="lazy">
+        <img src="{{ about.background_image | relative_url }}" alt="O nas" loading="lazy">
       </div>
     {% endif %}
   </div>
