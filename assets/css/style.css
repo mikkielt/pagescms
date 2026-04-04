@@ -69,7 +69,7 @@ a:hover { color: var(--color-accent-hover); }
 }
 
 .site-header.header-solid {
-  background: var(--color-bg);
+  background: rgba(250, 248, 245, 0.95);
   box-shadow: 0 2px 20px rgba(61, 43, 31, 0.08);
   padding: 0.6rem 0;
 }
@@ -330,8 +330,8 @@ a:hover { color: var(--color-accent-hover); }
   align-items: center;
   justify-content: center;
   height: 100%;
-  background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-border) 100%);
-  color: var(--color-muted);
+  background: linear-gradient(135deg, #5C7C5E 0%, #3D2B1F 100%);
+  color: rgba(255,255,255,0.8);
   font-size: 1.2rem;
   text-align: center;
   padding: var(--space-md);
