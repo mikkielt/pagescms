@@ -1,13 +1,6 @@
 {
   "heading": "Kontakt",
-  "email": "",
-  "phone": "",
-  "address": "",
-  "description": "",
-  "social": [],
-  "seo": {
-    "meta_title": "",
-    "meta_description": "",
-    "og_image": ""
-  }
+  "email": "123456789@mail.com",
+  "phone": "+48123456789",
+  "address": "00-000, Miasto, Polska"
 }
