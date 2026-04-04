@@ -1,82 +1,85 @@
 ---
 layout: default
-title: Domy z Bala
-seo_title: "Domy z Bala — Portfolio domów z bala"
-seo_description: "Naturalne, drewniane budownictwo. Zobacz nasze realizacje domów z bala."
+title: "Domy z Bala — Portfolio domów z bala"
+description: "Naturalne, drewniane budownictwo. Zobacz nasze realizacje domów z bala."
 ---
 
 {% assign portfolio = site.data.portfolio %}
+{% assign oferta = site.data.oferta %}
 {% assign about = site.data.about %}
 {% assign contact = site.data.contact %}
+
+<h1 class="visually-hidden">Domy z Bala — Naturalne, drewniane budownictwo</h1>
 
 <!-- ── Portfolio Section ── -->
 <section class="portfolio" id="portfolio">
   {% if portfolio and portfolio.size > 0 %}
     <div class="portfolio-track" id="portfolio-track">
       {% for project in portfolio %}
-        <article class="portfolio-slide" data-index="{{ forloop.index0 }}">
-          {% if project.featured_image and project.featured_image != "" %}
+        {% assign slide_index = forloop.index0 %}
+        {% assign all_images = "" | split: "" %}
+        {% if project.featured_image and project.featured_image != "" %}
+          {% assign fi_in_gallery = false %}
+          {% if project.images %}
+            {% for img in project.images %}
+              {% if img == project.featured_image %}{% assign fi_in_gallery = true %}{% endif %}
+            {% endfor %}
+          {% endif %}
+          {% unless fi_in_gallery %}
+            {% assign all_images = all_images | push: project.featured_image %}
+          {% endunless %}
+        {% endif %}
+        {% if project.images %}
+          {% for img in project.images %}
+            {% assign all_images = all_images | push: img %}
+          {% endfor %}
+        {% endif %}
+        <article class="portfolio-slide" data-index="{{ slide_index }}">
+          {% if all_images.size > 0 %}
             <img
-              src="{{ project.featured_image | relative_url }}"
+              src="{{ all_images[0] | relative_url }}"
               alt="{{ project.title }}"
               class="portfolio-slide__bg"
+              id="slide-bg-{{ slide_index }}"
+              data-original="{{ all_images[0] | relative_url }}"
               loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
             >
           {% endif %}
           <div class="portfolio-slide__gradient"></div>
 
-          <!-- Description overlay -->
-          <div class="portfolio-info" id="info-{{ forloop.index0 }}">
-            <div class="portfolio-info__short" onclick="toggleInfo({{ forloop.index0 }})">
-              <div class="portfolio-info__title">{{ project.title }}</div>
-              {% if project.short_description and project.short_description != "" %}
-                <div class="portfolio-info__subtitle">{{ project.short_description }}</div>
-              {% endif %}
-              <div class="portfolio-info__expand-hint">
-                <span class="portfolio-info__expand-icon">▸</span> Kliknij, aby rozwinąć
-              </div>
-            </div>
-            {% if project.long_description and project.long_description != "" %}
-              <div class="portfolio-info__long">
-                <p>{{ project.long_description }}</p>
+          <!-- Left panel: gallery + info -->
+          <div class="portfolio-panel">
+            {% if all_images.size > 1 %}
+              <div class="portfolio-gallery">
+                {% for img in all_images %}
+                  <button
+                    class="portfolio-gallery__thumb{% if forloop.first %} active{% endif %}"
+                    onclick="swapBackground({{ slide_index }}, '{{ img | relative_url }}', this)"
+                    aria-label="Pokaż zdjęcie {{ forloop.index }} — {{ project.title }}"
+                  >
+                    <img src="{{ img | relative_url }}" alt="Zdjęcie {{ forloop.index }} — {{ project.title }}" loading="lazy">
+                  </button>
+                {% endfor %}
               </div>
             {% endif %}
+
+            <div class="portfolio-info" id="info-{{ slide_index }}">
+              <div class="portfolio-info__short" onclick="toggleInfo({{ slide_index }})">
+                <div class="portfolio-info__title">{{ project.title }}</div>
+                {% if project.short_description and project.short_description != "" %}
+                  <div class="portfolio-info__subtitle">{{ project.short_description }}</div>
+                {% endif %}
+                <div class="portfolio-info__expand-hint">
+                  <span class="portfolio-info__expand-icon">▸</span> Kliknij, aby rozwinąć
+                </div>
+              </div>
+              {% if project.long_description and project.long_description != "" %}
+                <div class="portfolio-info__long">
+                  <p>{{ project.long_description }}</p>
+                </div>
+              {% endif %}
+            </div>
           </div>
-
-          <!-- Thumbnail strip -->
-          {% assign all_images = "" | split: "" %}
-          {% if project.featured_image and project.featured_image != "" %}
-            {% assign all_images = all_images | push: project.featured_image %}
-          {% endif %}
-          {% if project.images and project.images.size > 0 %}
-            {% for img in project.images %}
-              {% assign all_images = all_images | push: img %}
-            {% endfor %}
-          {% endif %}
-
-          {% if all_images.size > 1 %}
-            <div class="portfolio-thumbs">
-              {% for img in all_images %}
-                <button
-                  class="portfolio-thumb{% if forloop.first %} active{% endif %}"
-                  onclick="openLightbox('{{ img | relative_url }}', this)"
-                  aria-label="Powiększ zdjęcie {{ forloop.index }}"
-                >
-                  <img src="{{ img | relative_url }}" alt="Miniatura {{ forloop.index }}" loading="lazy">
-                </button>
-              {% endfor %}
-            </div>
-          {% elsif all_images.size == 1 %}
-            <div class="portfolio-thumbs">
-              <button
-                class="portfolio-thumb active"
-                onclick="openLightbox('{{ all_images[0] | relative_url }}', this)"
-                aria-label="Powiększ zdjęcie"
-              >
-                <img src="{{ all_images[0] | relative_url }}" alt="Miniatura" loading="lazy">
-              </button>
-            </div>
-          {% endif %}
         </article>
       {% endfor %}
     </div>
@@ -84,8 +87,29 @@ seo_description: "Naturalne, drewniane budownictwo. Zobacz nasze realizacje dom�
     {% if portfolio.size > 1 %}
       <button class="portfolio-nav portfolio-nav--prev" onclick="navigateSlide(-1)" aria-label="Poprzedni projekt">‹</button>
       <button class="portfolio-nav portfolio-nav--next" onclick="navigateSlide(1)" aria-label="Następny projekt">›</button>
-      <div class="portfolio-counter" id="portfolio-counter">
-        <span id="counter-current">1</span> / <span id="counter-total">{{ portfolio.size }}</span>
+
+      <!-- Mini preview strip -->
+      <div class="portfolio-preview" id="portfolio-preview">
+        {% for project in portfolio %}
+          {% assign preview_img = "" %}
+          {% if project.images and project.images.size > 0 %}
+            {% assign preview_img = project.images[0] %}
+          {% elsif project.featured_image and project.featured_image != "" %}
+            {% assign preview_img = project.featured_image %}
+          {% endif %}
+          <button
+            class="portfolio-preview__card{% if forloop.first %} active{% endif %}"
+            data-slide="{{ forloop.index0 }}"
+            onclick="previewNavigate({{ forloop.index0 }})"
+            aria-label="Przejdź do {{ project.title }}"
+          >
+            <div class="portfolio-preview__progress"></div>
+            {% if preview_img != "" %}
+              <img src="{{ preview_img | relative_url }}" alt="{{ project.title }}" loading="lazy">
+            {% endif %}
+            <span class="portfolio-preview__title">{{ project.title }}</span>
+          </button>
+        {% endfor %}
       </div>
     {% endif %}
 
@@ -99,11 +123,39 @@ seo_description: "Naturalne, drewniane budownictwo. Zobacz nasze realizacje dom�
   {% endif %}
 </section>
 
+<!-- ── Oferta Section ── -->
+<section class="oferta" id="oferta">
+  <div class="container">
+    <div class="oferta__header">
+      <h2 class="oferta__heading">{{ oferta.heading | default: "Oferta" }}</h2>
+
+      {% if oferta.description and oferta.description != "" %}
+        <p class="oferta__description">{{ oferta.description }}</p>
+      {% endif %}
+    </div>
+
+    {% if oferta.items and oferta.items.size > 0 %}
+      <div class="oferta__grid">
+        {% for item in oferta.items %}
+          <div class="oferta__card">
+            {% if item.icon and item.icon != "" %}
+              <div class="oferta__card-icon" role="img" aria-label="{{ item.title }}">{{ item.icon }}</div>
+            {% endif %}
+            <h3 class="oferta__card-title">{{ item.title }}</h3>
+            {% if item.description and item.description != "" %}
+              <p class="oferta__card-text">{{ item.description }}</p>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</section>
+
 <!-- ── About Section ── -->
 <section class="about" id="about">
   <div class="container">
     <div class="about__inner">
-      <div class="about__label">O nas</div>
       <h2 class="about__heading">{{ about.heading | default: "O nas" }}</h2>
 
       {% if about.story and about.story != "" %}
@@ -127,7 +179,6 @@ seo_description: "Naturalne, drewniane budownictwo. Zobacz nasze realizacje dom�
 <section class="contact" id="contact">
   <div class="container">
     <div class="contact__inner">
-      <div class="contact__label">Kontakt</div>
       <h2 class="contact__heading">{{ contact.heading | default: "Kontakt" }}</h2>
 
       {% if contact.description and contact.description != "" %}

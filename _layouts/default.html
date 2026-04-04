@@ -3,9 +3,30 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }} | {{ site.data.settings.title | default: site.title }}{% endif %}</title>
-  <meta name="description" content="{{ page.seo_description | default: site.data.settings.description | default: '' }}">
-  {% if page.og_image %}<meta property="og:image" content="{{ page.og_image }}">{% endif %}
+  {% seo %}
+
+  <!-- LocalBusiness structured data -->
+  {% assign ld_contact = site.data.contact %}
+  {% assign ld_settings = site.data.settings %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": {{ ld_settings.title | default: site.title | jsonify }},
+    "description": {{ ld_settings.description | default: site.description | jsonify }},
+    "url": "{{ site.url }}{{ site.baseurl }}/",
+    {% if ld_contact.email and ld_contact.email != "" %}"email": {{ ld_contact.email | jsonify }},{% endif %}
+    {% if ld_contact.phone and ld_contact.phone != "" %}"telephone": {{ ld_contact.phone | jsonify }},{% endif %}
+    {% if ld_contact.address and ld_contact.address != "" %}
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": {{ ld_contact.address | jsonify }}
+    },
+    {% endif %}
+    "image": "{{ site.url }}{{ site.baseurl }}/media/portfolio/{{ site.data.portfolio[0].images[0] | split: '/' | last }}"
+  }
+  </script>
+
   <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
 </head>
 <body>
@@ -47,15 +68,48 @@
           if (toggle) toggle.setAttribute('aria-expanded', 'false');
         });
       });
+
+      /* Portfolio dropdown toggle */
+      var dropdown = header.querySelector('.nav-dropdown');
+      var trigger = header.querySelector('.nav-dropdown__trigger');
+      if (dropdown && trigger) {
+        trigger.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var open = dropdown.classList.toggle('open');
+          trigger.setAttribute('aria-expanded', open);
+        });
+        document.addEventListener('click', function() {
+          dropdown.classList.remove('open');
+          trigger.setAttribute('aria-expanded', 'false');
+        });
+      }
     })();
 
     /* ── Portfolio carousel navigation ── */
     var track = document.getElementById('portfolio-track');
+    var autoTimer = null;
+    var idleTimer = null;
+    var AUTO_INTERVAL = 7000;
+    var IDLE_RESUME = 10000;
+    var autoPaused = false;
 
     function getCurrentSlideIndex() {
       if (!track) return 0;
       var slideWidth = track.firstElementChild ? track.firstElementChild.offsetWidth : 1;
       return Math.round(track.scrollLeft / slideWidth);
+    }
+
+    function updatePreview(index) {
+      var cards = document.querySelectorAll('.portfolio-preview__card');
+      cards.forEach(function(card, i) {
+        card.classList.remove('active');
+        /* Reset animation by forcing reflow */
+        var bar = card.querySelector('.portfolio-preview__progress');
+        if (bar) { bar.style.animation = 'none'; bar.offsetHeight; bar.style.animation = ''; }
+      });
+      if (cards[index]) {
+        cards[index].classList.add('active');
+      }
     }
 
     function navigateSlide(dir) {
@@ -65,18 +119,139 @@
       var next = current + dir;
       if (next < 0) next = slides.length - 1;
       if (next >= slides.length) next = 0;
-      slides[next].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+      track.scrollTo({ left: next * slides[0].offsetWidth, behavior: 'smooth' });
+      pauseAuto();
     }
 
-    function updateCounter() {
-      var el = document.getElementById('counter-current');
-      if (el) el.textContent = getCurrentSlideIndex() + 1;
+    function navigateToSlide(index) {
+      if (!track) return;
+      var slides = track.querySelectorAll('.portfolio-slide');
+      if (index >= 0 && index < slides.length) {
+        track.scrollTo({ left: index * slides[0].offsetWidth, behavior: 'smooth' });
+      }
+      /* Close dropdown */
+      var dropdown = document.querySelector('.nav-dropdown');
+      var trigger = document.querySelector('.nav-dropdown__trigger');
+      if (dropdown) dropdown.classList.remove('open');
+      if (trigger) trigger.setAttribute('aria-expanded', 'false');
+      pauseAuto();
+    }
+
+    function previewNavigate(index) {
+      navigateToSlide(index);
+    }
+
+    /* Auto-carousel */
+    function isPortfolioVisible() {
+      var section = document.getElementById('portfolio');
+      if (!section) return false;
+      var rect = section.getBoundingClientRect();
+      return rect.bottom > 0 && rect.top < window.innerHeight;
+    }
+
+    function startAuto() {
+      stopAuto();
+      autoPaused = false;
+      var cards = document.querySelectorAll('.portfolio-preview__card');
+      cards.forEach(function(c) { c.classList.remove('paused'); });
+      autoTimer = setInterval(function() {
+        if (!track || !isPortfolioVisible()) return;
+        var slides = track.querySelectorAll('.portfolio-slide');
+        var current = getCurrentSlideIndex();
+        var next = (current + 1) % slides.length;
+        track.scrollTo({ left: next * slides[0].offsetWidth, behavior: 'smooth' });
+      }, AUTO_INTERVAL);
+    }
+
+    function stopAuto() {
+      if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+    }
+
+    function pauseAuto() {
+      stopAuto();
+      autoPaused = true;
+      var cards = document.querySelectorAll('.portfolio-preview__card');
+      cards.forEach(function(c) { c.classList.add('paused'); });
+      /* Schedule resume after idle */
+      if (idleTimer) clearTimeout(idleTimer);
+      idleTimer = setTimeout(function() {
+        startAuto();
+      }, IDLE_RESUME);
     }
 
     if (track) {
+      /* Sync preview on scroll */
+      var lastSyncedIndex = 0;
       track.addEventListener('scroll', function() {
-        requestAnimationFrame(updateCounter);
+        requestAnimationFrame(function() {
+          var idx = getCurrentSlideIndex();
+          if (idx !== lastSyncedIndex) {
+            lastSyncedIndex = idx;
+            updatePreview(idx);
+          }
+        });
       }, { passive: true });
+
+      /* Touch/swipe edge wrapping */
+      var touchStartX = 0;
+      var touchStartScroll = 0;
+      track.addEventListener('touchstart', function(e) {
+        touchStartX = e.touches[0].clientX;
+        touchStartScroll = track.scrollLeft;
+        pauseAuto();
+      }, { passive: true });
+
+      track.addEventListener('touchend', function(e) {
+        var dx = e.changedTouches[0].clientX - touchStartX;
+        var slides = track.querySelectorAll('.portfolio-slide');
+        var current = getCurrentSlideIndex();
+        var threshold = 50;
+        /* Swiped left (next) at last slide */
+        if (dx < -threshold && current === slides.length - 1 && track.scrollLeft >= touchStartScroll) {
+          track.scrollTo({ left: 0, behavior: 'smooth' });
+        }
+        /* Swiped right (prev) at first slide */
+        if (dx > threshold && current === 0 && track.scrollLeft <= 0) {
+          track.scrollTo({ left: (slides.length - 1) * slides[0].offsetWidth, behavior: 'smooth' });
+        }
+      }, { passive: true });
+
+      /* Pause on hover */
+      var portfolio = document.getElementById('portfolio');
+      if (portfolio) {
+        portfolio.addEventListener('mouseenter', function() {
+          if (!autoPaused) pauseAuto();
+        });
+        portfolio.addEventListener('mouseleave', function() {
+          /* idleTimer already scheduled by pauseAuto */
+        });
+      }
+
+      /* Start auto-carousel */
+      startAuto();
+    }
+
+    /* ── Swap background image from gallery thumb ── */
+    function swapBackground(slideIndex, src, thumbEl) {
+      var bgImg = document.getElementById('slide-bg-' + slideIndex);
+      if (bgImg) {
+        bgImg.style.opacity = '0';
+        setTimeout(function() {
+          bgImg.src = src;
+          bgImg.style.opacity = '1';
+        }, 200);
+      }
+
+      /* Update active thumb */
+      if (thumbEl) {
+        var gallery = thumbEl.closest('.portfolio-gallery');
+        if (gallery) {
+          gallery.querySelectorAll('.portfolio-gallery__thumb').forEach(function(t) {
+            t.classList.remove('active');
+          });
+          thumbEl.classList.add('active');
+        }
+      }
     }
 
     /* ── Description expand/collapse ── */
@@ -96,17 +271,6 @@
       img.src = src;
       lb.classList.add('active');
       document.body.style.overflow = 'hidden';
-
-      /* Update active thumb styling */
-      if (thumbEl) {
-        var parent = thumbEl.closest('.portfolio-thumbs');
-        if (parent) {
-          parent.querySelectorAll('.portfolio-thumb').forEach(function(t) {
-            t.classList.remove('active');
-          });
-          thumbEl.classList.add('active');
-        }
-      }
     }
 
     function closeLightbox(e) {

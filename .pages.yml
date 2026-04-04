@@ -47,7 +47,7 @@ content:
       - name: footer_text
         label: Tekst stopki
         type: string
-        description: Wyświetlany na dole każdej strony.
+        description: Wyświetlany na dole strony.
 
   - name: pages
     label: Strony
@@ -72,17 +72,42 @@ content:
             label: Pełny opis
             type: text
             description: Wyświetlany po rozwinięciu panelu opisu.
-          - name: featured_image
-            label: Zdjęcie główne
-            type: image
-            required: true
-            description: Główne zdjęcie projektu wyświetlane na pełnym ekranie.
           - name: images
             label: Galeria zdjęć
             type: image
             list:
               max: 20
-            description: Dodatkowe zdjęcia wyświetlane jako miniatury.
+            description: Pierwsze zdjęcie jest wyświetlane jako tło slajdu. Pozostałe jako miniatury do przełączania.
+
+      - name: oferta
+        label: Oferta
+        type: file
+        path: _data/oferta.json
+        format: json
+        fields:
+          - name: heading
+            label: Nagłówek sekcji
+            type: string
+            required: true
+          - name: description
+            label: Opis sekcji
+            type: text
+          - name: items
+            label: Elementy oferty
+            type: object
+            list:
+              max: 12
+              collapsible:
+                collapsed: true
+                summary: "{title}"
+            fields:
+              - name: title
+                label: Tytuł
+                type: string
+                required: true
+              - name: description
+                label: Opis
+                type: text
 
       - name: about
         label: O nas
@@ -94,13 +119,6 @@ content:
             label: Nagłówek sekcji
             type: string
             required: true
-          - name: story
-            label: Nasza historia
-            type: rich-text
-            description: Główna opowieść o firmie.
-          - name: mission
-            label: Misja firmy
-            type: text
           - name: background_image
             label: Zdjęcie w tle
             type: image

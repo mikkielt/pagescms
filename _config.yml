@@ -1,7 +1,14 @@
 title: Domy z Bala
-url: ""
+description: "Portfolio domów z bala — naturalne, drewniane budownictwo"
+url: "" # TODO: set to production domain, e.g. "https://domyzbala.pl"
 baseurl: "/pagescms"
 markdown: kramdown
+
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+lang: pl_PL
 
 exclude:
   - Gemfile
