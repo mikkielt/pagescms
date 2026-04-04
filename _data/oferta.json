@@ -1,26 +1,22 @@
 {
   "heading": "Oferta",
-  "description": "Poznaj naszą ofertę domów z bala — od tradycyjnych po nowoczesne rozwiązania.",
+  "description": "Poznaj naszą ofertę domów z bala",
   "items": [
     {
       "title": "Domy z bala okrągłego",
-      "description": "Klasyczne domy budowane z bali okrągłych, łączące tradycję z nowoczesnymi standardami energooszczędności.",
-      "icon": "🏡"
+      "description": "Klasyczne domy budowane z bali okrągłych, łączące tradycję z nowoczesnymi standardami energooszczędności."
     },
     {
       "title": "Domy z bala kwadratowego",
-      "description": "Nowoczesna estetyka i precyzyjna konstrukcja z bali profilowanych, idealne dla wymagających inwestorów.",
-      "icon": "🏠"
+      "description": "Nowoczesna estetyka i precyzyjna konstrukcja z bali profilowanych, idealne dla wymagających inwestorów."
     },
     {
       "title": "Altany i wiaty",
-      "description": "Drewniane altany ogrodowe, wiaty garażowe i pergole — naturalne uzupełnienie każdej posesji.",
-      "icon": "🌿"
+      "description": "Drewniane altany ogrodowe, wiaty garażowe i pergole — naturalne uzupełnienie każdej posesji."
     },
     {
       "title": "Projekty na zamówienie",
-      "description": "Indywidualne projekty dopasowane do potrzeb klienta — od wizualizacji po gotowy budynek.",
-      "icon": "📐"
+      "description": "Indywidualne projekty dopasowane do potrzeb klienta — od wizualizacji po gotowy budynek."
     }
   ]
 }
