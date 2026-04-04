@@ -58,11 +58,7 @@ content:
         type: file
         path: _data/portfolio.json
         format: json
-        list:
-          min: 1
-          collapsible:
-            collapsed: true
-            summary: "{title}"
+        list: true
         fields:
           - name: title
             label: Nazwa projektu
