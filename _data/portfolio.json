@@ -1,1 +1,22 @@
-[]
+[
+  {
+    "title": "Domek A",
+    "short_description": "Domek A opis krotki",
+    "long_description": "Domek A opis dluzszy",
+    "featured_image": "/media/portfolio/360_F_322310361_wrwKhMMYskgsZlRCzdUp6HWPtoDwZbHL.jpg",
+    "images": [
+      "/media/portfolio/82161614-old-russian-wooden-houses-and-structures-russia.jpg",
+      "/media/portfolio/old-log-house-village-small-260nw-2682185477.webp"
+    ]
+  },
+  {
+    "title": "Domek B",
+    "short_description": "Domek B opis krotki",
+    "long_description": "Domek B opis dluzszy",
+    "featured_image": "/media/portfolio/istockphoto-1141078602-612x612.jpg",
+    "images": [
+      "/media/portfolio/lake-canada-emerald-lake-wallpaper-preview.jpg",
+      "/media/portfolio/istockphoto-1141078602-612x612-1.jpg"
+    ]
+  }
+]
