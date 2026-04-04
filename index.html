@@ -1,47 +1,175 @@
 ---
 layout: default
-title: Home
-seo_title: "{{ site.data.index.seo.meta_title }}"
-seo_description: "{{ site.data.index.seo.meta_description }}"
-og_image: "{{ site.data.index.seo.og_image }}"
+title: Domy z Bala
+seo_title: "Domy z Bala — Portfolio domów z bala"
+seo_description: "Naturalne, drewniane budownictwo. Zobacz nasze realizacje domów z bala."
 ---
 
-{% assign d = site.data.index %}
+{% assign portfolio = site.data.portfolio %}
+{% assign about = site.data.about %}
+{% assign contact = site.data.contact %}
 
-<section class="hero">
-  <div class="container">
-    {% if d.hero_image and d.hero_image != "" %}
-      <img src="{{ d.hero_image }}" alt="" class="hero-image">
-    {% endif %}
-    <div class="hero-content">
-      <h1>{{ d.hero_headline | default: "Welcome" }}</h1>
-      {% if d.hero_subtitle and d.hero_subtitle != "" %}
-        <p class="hero-subtitle">{{ d.hero_subtitle }}</p>
-      {% endif %}
-      {% if d.hero_cta_label and d.hero_cta_label != "" %}
-        <a href="{{ d.hero_cta_url | default: '/contact' | relative_url }}" class="btn">{{ d.hero_cta_label }}</a>
-      {% endif %}
-    </div>
-  </div>
-</section>
+<!-- ── Portfolio Section ── -->
+<section class="portfolio" id="portfolio">
+  {% if portfolio and portfolio.size > 0 %}
+    <div class="portfolio-track" id="portfolio-track">
+      {% for project in portfolio %}
+        <article class="portfolio-slide" data-index="{{ forloop.index0 }}">
+          {% if project.featured_image and project.featured_image != "" %}
+            <img
+              src="{{ project.featured_image }}"
+              alt="{{ project.title }}"
+              class="portfolio-slide__bg"
+              loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+            >
+          {% endif %}
+          <div class="portfolio-slide__gradient"></div>
 
-{% if d.services and d.services.size > 0 %}
-<section class="services">
-  <div class="container">
-    <h2>Our Services</h2>
-    <div class="services-grid">
-      {% for service in d.services %}
-        <div class="service-card">
-          {% if service.icon and service.icon != "" %}
-            <img src="{{ service.icon }}" alt="" class="service-icon">
+          <!-- Description overlay -->
+          <div class="portfolio-info" id="info-{{ forloop.index0 }}">
+            <div class="portfolio-info__short" onclick="toggleInfo({{ forloop.index0 }})">
+              <div class="portfolio-info__title">{{ project.title }}</div>
+              {% if project.short_description and project.short_description != "" %}
+                <div class="portfolio-info__subtitle">{{ project.short_description }}</div>
+              {% endif %}
+              <div class="portfolio-info__expand-hint">
+                <span class="portfolio-info__expand-icon">▸</span> Kliknij, aby rozwinąć
+              </div>
+            </div>
+            {% if project.long_description and project.long_description != "" %}
+              <div class="portfolio-info__long">
+                <p>{{ project.long_description }}</p>
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- Thumbnail strip -->
+          {% assign all_images = "" | split: "" %}
+          {% if project.featured_image and project.featured_image != "" %}
+            {% assign all_images = all_images | push: project.featured_image %}
           {% endif %}
-          <h3>{{ service.title }}</h3>
-          {% if service.description and service.description != "" %}
-            <p>{{ service.description }}</p>
+          {% if project.images and project.images.size > 0 %}
+            {% for img in project.images %}
+              {% assign all_images = all_images | push: img %}
+            {% endfor %}
           {% endif %}
-        </div>
+
+          {% if all_images.size > 1 %}
+            <div class="portfolio-thumbs">
+              {% for img in all_images %}
+                <button
+                  class="portfolio-thumb{% if forloop.first %} active{% endif %}"
+                  onclick="openLightbox('{{ img }}', this)"
+                  aria-label="Powiększ zdjęcie {{ forloop.index }}"
+                >
+                  <img src="{{ img }}" alt="Miniatura {{ forloop.index }}" loading="lazy">
+                </button>
+              {% endfor %}
+            </div>
+          {% elsif all_images.size == 1 %}
+            <div class="portfolio-thumbs">
+              <button
+                class="portfolio-thumb active"
+                onclick="openLightbox('{{ all_images[0] }}', this)"
+                aria-label="Powiększ zdjęcie"
+              >
+                <img src="{{ all_images[0] }}" alt="Miniatura" loading="lazy">
+              </button>
+            </div>
+          {% endif %}
+        </article>
       {% endfor %}
     </div>
+
+    {% if portfolio.size > 1 %}
+      <button class="portfolio-nav portfolio-nav--prev" onclick="navigateSlide(-1)" aria-label="Poprzedni projekt">‹</button>
+      <button class="portfolio-nav portfolio-nav--next" onclick="navigateSlide(1)" aria-label="Następny projekt">›</button>
+      <div class="portfolio-counter" id="portfolio-counter">
+        <span id="counter-current">1</span> / <span id="counter-total">{{ portfolio.size }}</span>
+      </div>
+    {% endif %}
+
+  {% else %}
+    <div class="portfolio-empty">
+      <div class="portfolio-empty__inner">
+        <div class="portfolio-empty__icon">🏠</div>
+        <p>Portfolio w przygotowaniu.<br>Dodaj projekty przez panel administracyjny.</p>
+      </div>
+    </div>
+  {% endif %}
+</section>
+
+<!-- ── About Section ── -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="about__inner">
+      <div class="about__label">O nas</div>
+      <h2 class="about__heading">{{ about.heading | default: "O nas" }}</h2>
+
+      {% if about.story and about.story != "" %}
+        <div class="about__story">{{ about.story }}</div>
+      {% endif %}
+
+      {% if about.mission and about.mission != "" %}
+        <blockquote class="about__mission">{{ about.mission }}</blockquote>
+      {% endif %}
+    </div>
+
+    {% if about.background_image and about.background_image != "" %}
+      <div class="about__bg-image">
+        <img src="{{ about.background_image }}" alt="O nas" loading="lazy">
+      </div>
+    {% endif %}
   </div>
 </section>
-{% endif %}
+
+<!-- ── Contact Section ── -->
+<section class="contact" id="contact">
+  <div class="container">
+    <div class="contact__inner">
+      <div class="contact__label">Kontakt</div>
+      <h2 class="contact__heading">{{ contact.heading | default: "Kontakt" }}</h2>
+
+      {% if contact.description and contact.description != "" %}
+        <p class="contact__description">{{ contact.description }}</p>
+      {% endif %}
+
+      <div class="contact__grid">
+        {% if contact.email and contact.email != "" %}
+          <div class="contact__item">
+            <div class="contact__item-label">Email</div>
+            <a href="mailto:{{ contact.email }}">{{ contact.email }}</a>
+          </div>
+        {% endif %}
+
+        {% if contact.phone and contact.phone != "" %}
+          <div class="contact__item">
+            <div class="contact__item-label">Telefon</div>
+            <a href="tel:{{ contact.phone }}">{{ contact.phone }}</a>
+          </div>
+        {% endif %}
+
+        {% if contact.address and contact.address != "" %}
+          <div class="contact__item">
+            <div class="contact__item-label">Adres</div>
+            <p>{{ contact.address | newline_to_br }}</p>
+          </div>
+        {% endif %}
+      </div>
+
+      {% if contact.social and contact.social.size > 0 %}
+        <div class="contact__social">
+          {% for link in contact.social %}
+            <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer" class="contact__social-link">{{ link.platform }}</a>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- ── Lightbox ── -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <button class="lightbox__close" onclick="closeLightbox(event)" aria-label="Zamknij">✕</button>
+  <img class="lightbox__img" id="lightbox-img" src="" alt="Powiększone zdjęcie">
+</div>

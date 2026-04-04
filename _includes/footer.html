@@ -3,14 +3,16 @@
     {% if site.data.contact.social and site.data.contact.social.size > 0 %}
       <div class="footer-social">
         {% for link in site.data.contact.social %}
-          <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer">{{ link.platform }}</a>
+          <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer" aria-label="{{ link.platform }}">{{ link.platform }}</a>
         {% endfor %}
       </div>
     {% endif %}
-    {% if site.data.settings.footer_text and site.data.settings.footer_text != "" %}
-      <p class="footer-text">{{ site.data.settings.footer_text }}</p>
-    {% else %}
-      <p class="footer-text">&copy; {{ "now" | date: "%Y" }} {{ site.data.settings.title | default: site.title }}</p>
-    {% endif %}
+    <p class="footer-text">
+      {% if site.data.settings.footer_text and site.data.settings.footer_text != "" %}
+        {{ site.data.settings.footer_text }}
+      {% else %}
+        &copy; {{ "now" | date: "%Y" }} {{ site.data.settings.title | default: site.title }}. Wszystkie prawa zastrzeżone.
+      {% endif %}
+    </p>
   </div>
 </footer>
