@@ -1,8 +1,5 @@
 [
   {
-    "title": "Domek A",
-    "short_description": "Domek A opis krotki",
-    "long_description": "Domek A opis dluzszy",
     "images": [
       "/media/portfolio/360_F_322310361_wrwKhMMYskgsZlRCzdUp6HWPtoDwZbHL.jpg",
       "/media/portfolio/82161614-old-russian-wooden-houses-and-structures-russia.jpg",
@@ -10,9 +7,6 @@
     ]
   },
   {
-    "title": "Domek B",
-    "short_description": "Domek B opis krotki",
-    "long_description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
     "images": [
       "/media/portfolio/istockphoto-1141078602-612x612.jpg",
       "/media/portfolio/lake-canada-emerald-lake-wallpaper-preview.jpg",
@@ -20,9 +14,6 @@
     ]
   },
   {
-    "title": "Domek C",
-    "short_description": "Domek C opis krotki",
-    "long_description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
     "images": [
       "/media/portfolio/istockphoto-1141078602-612x612.jpg",
       "/media/portfolio/lake-canada-emerald-lake-wallpaper-preview.jpg",

@@ -60,18 +60,6 @@ content:
         format: json
         list: true
         fields:
-          - name: title
-            label: Nazwa projektu
-            type: string
-            required: true
-          - name: short_description
-            label: Krótki opis
-            type: string
-            description: Jednoliniowy opis wyświetlany na karcie portfolio.
-          - name: long_description
-            label: Pełny opis
-            type: text
-            description: Wyświetlany po rozwinięciu panelu opisu.
           - name: images
             label: Galeria zdjęć
             type: image

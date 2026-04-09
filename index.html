@@ -38,7 +38,7 @@ description: "Naturalne, drewniane budownictwo. Zobacz nasze realizacje domów z
           {% if all_images.size > 0 %}
             <img
               src="{{ all_images[0] | relative_url }}"
-              alt="{{ project.title }}"
+              alt="Projekt {{ forloop.index }}"
               class="portfolio-slide__bg"
               id="slide-bg-{{ slide_index }}"
               data-original="{{ all_images[0] | relative_url }}"
@@ -55,30 +55,15 @@ description: "Naturalne, drewniane budownictwo. Zobacz nasze realizacje domów z
                   <button
                     class="portfolio-gallery__thumb{% if forloop.first %} active{% endif %}"
                     onclick="swapBackground({{ slide_index }}, '{{ img | relative_url }}', this)"
-                    aria-label="Pokaż zdjęcie {{ forloop.index }} — {{ project.title }}"
+                    aria-label="Pokaż zdjęcie {{ forloop.index }}"
                   >
-                    <img src="{{ img | relative_url }}" alt="Zdjęcie {{ forloop.index }} — {{ project.title }}" loading="lazy">
+                    <img src="{{ img | relative_url }}" alt="Zdjęcie {{ forloop.index }}" loading="lazy">
                   </button>
                 {% endfor %}
               </div>
             {% endif %}
 
-            <div class="portfolio-info" id="info-{{ slide_index }}">
-              <div class="portfolio-info__short" onclick="toggleInfo({{ slide_index }})">
-                <div class="portfolio-info__title">{{ project.title }}</div>
-                {% if project.short_description and project.short_description != "" %}
-                  <div class="portfolio-info__subtitle">{{ project.short_description }}</div>
-                {% endif %}
-                <div class="portfolio-info__expand-hint">
-                  <span class="portfolio-info__expand-icon">▸</span> Kliknij, aby rozwinąć
-                </div>
-              </div>
-              {% if project.long_description and project.long_description != "" %}
-                <div class="portfolio-info__long">
-                  <p>{{ project.long_description }}</p>
-                </div>
-              {% endif %}
-            </div>
+
           </div>
         </article>
       {% endfor %}

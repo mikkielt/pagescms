@@ -69,20 +69,6 @@
         });
       });
 
-      /* Portfolio dropdown toggle */
-      var dropdown = header.querySelector('.nav-dropdown');
-      var trigger = header.querySelector('.nav-dropdown__trigger');
-      if (dropdown && trigger) {
-        trigger.addEventListener('click', function(e) {
-          e.stopPropagation();
-          var open = dropdown.classList.toggle('open');
-          trigger.setAttribute('aria-expanded', open);
-        });
-        document.addEventListener('click', function() {
-          dropdown.classList.remove('open');
-          trigger.setAttribute('aria-expanded', 'false');
-        });
-      }
     })();
 
     /* ── Portfolio carousel navigation ── */
@@ -116,11 +102,6 @@
       if (index >= 0 && index < slides.length) {
         track.scrollTo({ left: index * slides[0].offsetWidth, behavior: 'smooth' });
       }
-      /* Close dropdown */
-      var dropdown = document.querySelector('.nav-dropdown');
-      var trigger = document.querySelector('.nav-dropdown__trigger');
-      if (dropdown) dropdown.classList.remove('open');
-      if (trigger) trigger.setAttribute('aria-expanded', 'false');
       pauseAuto();
     }
 
@@ -219,15 +200,6 @@
           thumbEl.classList.add('active');
         }
       }
-    }
-
-    /* ── Description expand/collapse ── */
-    function toggleInfo(index) {
-      var info = document.getElementById('info-' + index);
-      if (!info) return;
-      info.classList.toggle('expanded');
-      var icon = info.querySelector('.portfolio-info__expand-icon');
-      if (icon) icon.textContent = info.classList.contains('expanded') ? '▾' : '▸';
     }
 
     /* ── Lightbox ── */
