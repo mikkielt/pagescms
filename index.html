@@ -88,29 +88,7 @@ description: "Naturalne, drewniane budownictwo. Zobacz nasze realizacje domów z
       <button class="portfolio-nav portfolio-nav--prev" onclick="navigateSlide(-1)" aria-label="Poprzedni projekt">‹</button>
       <button class="portfolio-nav portfolio-nav--next" onclick="navigateSlide(1)" aria-label="Następny projekt">›</button>
 
-      <!-- Mini preview strip -->
-      <div class="portfolio-preview" id="portfolio-preview">
-        {% for project in portfolio %}
-          {% assign preview_img = "" %}
-          {% if project.images and project.images.size > 0 %}
-            {% assign preview_img = project.images[0] %}
-          {% elsif project.featured_image and project.featured_image != "" %}
-            {% assign preview_img = project.featured_image %}
-          {% endif %}
-          <button
-            class="portfolio-preview__card{% if forloop.first %} active{% endif %}"
-            data-slide="{{ forloop.index0 }}"
-            onclick="previewNavigate({{ forloop.index0 }})"
-            aria-label="Przejdź do {{ project.title }}"
-          >
-            <div class="portfolio-preview__progress"></div>
-            {% if preview_img != "" %}
-              <img src="{{ preview_img | relative_url }}" alt="{{ project.title }}" loading="lazy">
-            {% endif %}
-            <span class="portfolio-preview__title">{{ project.title }}</span>
-          </button>
-        {% endfor %}
-      </div>
+
     {% endif %}
 
   {% else %}

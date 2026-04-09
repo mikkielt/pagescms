@@ -99,19 +99,6 @@
       return Math.round(track.scrollLeft / slideWidth);
     }
 
-    function updatePreview(index) {
-      var cards = document.querySelectorAll('.portfolio-preview__card');
-      cards.forEach(function(card, i) {
-        card.classList.remove('active');
-        /* Reset animation by forcing reflow */
-        var bar = card.querySelector('.portfolio-preview__progress');
-        if (bar) { bar.style.animation = 'none'; bar.offsetHeight; bar.style.animation = ''; }
-      });
-      if (cards[index]) {
-        cards[index].classList.add('active');
-      }
-    }
-
     function navigateSlide(dir) {
       if (!track) return;
       var slides = track.querySelectorAll('.portfolio-slide');
@@ -137,10 +124,6 @@
       pauseAuto();
     }
 
-    function previewNavigate(index) {
-      navigateToSlide(index);
-    }
-
     /* Auto-carousel */
     function isPortfolioVisible() {
       var section = document.getElementById('portfolio');
@@ -152,8 +135,6 @@
     function startAuto() {
       stopAuto();
       autoPaused = false;
-      var cards = document.querySelectorAll('.portfolio-preview__card');
-      cards.forEach(function(c) { c.classList.remove('paused'); });
       autoTimer = setInterval(function() {
         if (!track || !isPortfolioVisible()) return;
         var slides = track.querySelectorAll('.portfolio-slide');
@@ -170,8 +151,6 @@
     function pauseAuto() {
       stopAuto();
       autoPaused = true;
-      var cards = document.querySelectorAll('.portfolio-preview__card');
-      cards.forEach(function(c) { c.classList.add('paused'); });
       /* Schedule resume after idle */
       if (idleTimer) clearTimeout(idleTimer);
       idleTimer = setTimeout(function() {
@@ -180,18 +159,6 @@
     }
 
     if (track) {
-      /* Sync preview on scroll */
-      var lastSyncedIndex = 0;
-      track.addEventListener('scroll', function() {
-        requestAnimationFrame(function() {
-          var idx = getCurrentSlideIndex();
-          if (idx !== lastSyncedIndex) {
-            lastSyncedIndex = idx;
-            updatePreview(idx);
-          }
-        });
-      }, { passive: true });
-
       /* Touch/swipe edge wrapping */
       var touchStartX = 0;
       var touchStartScroll = 0;
